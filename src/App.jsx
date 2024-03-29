@@ -1,31 +1,14 @@
-import { getData } from "./features/rooms";
-import spinner from "./assets/spinner.svg";
-import { useDispatch, useSelector } from "react-redux";
+import Table from "./components/Table/Table.jsx";
+import ManageCalendar from "./components/ManageCalendar/ManageCalendar.jsx";
 
 function App() {
-    const dispatch = useDispatch();
-    const rooms = useSelector((state) => state.rooms);
-    console.log(rooms);
-
-    if (!rooms.roomsData && !rooms.loading && !rooms.error) {
-        dispatch(getData());
-    }
-
-    let content;
-    if (rooms.loading) {
-        content = <img src={spinner} alt="Chargement en cours..." />;
-    } else if (rooms.error) {
-        content = <p className="text-red-600">Une erreur est survenue...</p>;
-    } else if (rooms.roomsData) {
-        content = rooms.roomsData.map((room) => (
-            <div key={room.id}>
-                <p>{room.name}</p>
-                <img src={room.icon} alt="" className="w-6" />
-            </div>
-        ));
-    }
-
-    return <div>{content}</div>;
+    return (
+        <div>
+            <h1>Réserver votre salle !</h1>
+            <ManageCalendar />
+            <Table />
+        </div>
+    );
 }
 
 export default App;
