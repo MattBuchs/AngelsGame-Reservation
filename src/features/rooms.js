@@ -5,6 +5,7 @@ const initialState = {
     loading: false,
     error: false,
     dayDisplayed: null,
+    farthestDay: null,
 };
 
 export const rooms = createSlice({
@@ -25,12 +26,14 @@ export const rooms = createSlice({
         addDayDisplayed: (state, action) => {
             state.dayDisplayed = action.payload;
         },
+        addFarthestDay: (state, action) => {
+            state.farthestDay = action.payload;
+        },
     },
 });
 
 export function getData(action) {
     return function (dispatch, getState) {
-        console.log(action);
         dispatch(addLoader());
 
         let date;
@@ -46,10 +49,14 @@ export function getData(action) {
                 if (!response.ok) throw new Error();
                 return response.json();
             })
-            .then((data) => dispatch(addData(data.dayRooms)))
+            .then((data) => {
+                dispatch(addData(data.dayRooms));
+                dispatch(addFarthestDay(data.farthestDay));
+            })
             .catch(() => dispatch(addError()));
     };
 }
 
-export const { addLoader, addData, addError, addDayDisplayed } = rooms.actions;
+export const { addLoader, addData, addError, addDayDisplayed, addFarthestDay } =
+    rooms.actions;
 export default rooms.reducer;

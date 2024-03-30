@@ -1,18 +1,43 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import { getData } from "../../features/rooms.js";
 import spinner from "../../assets/spinner.svg";
+import ModalContent from "../Reservation/ModalContent.jsx";
+import { createPortal } from "react-dom";
 
 export default function Table() {
     const dispatch = useDispatch();
+    const [showModal, setShowModal] = useState(false);
+    const [roomInfos, setRoomInfos] = useState({
+        name: null,
+        day: null,
+        hour: null,
+    });
     const rooms = useSelector((state) => state.rooms);
 
     if (!rooms.roomsData && !rooms.loading && !rooms.error) {
         dispatch(getData());
     }
 
-    const handleReservation = (name, day, hour) => {
-        console.log(name, day, hour);
+    const handleReservation = (room, session) => {
+        const currentDay = new Date();
+        currentDay.setHours(0, 0, 0, 0);
+
+        const [year, month, day] = room.day.split("-");
+        const dayChoiced = new Date(year, month - 1, day);
+
+        if (
+            !session.is_blocked &&
+            currentDay.getTime() <= dayChoiced.getTime()
+        ) {
+            setShowModal(true);
+            setRoomInfos({
+                name: room.name,
+                day: room.day,
+                hour: session.hour,
+            });
+        }
     };
 
     let content;
@@ -42,16 +67,12 @@ export default function Table() {
                                 <button
                                     key={nanoid(8)}
                                     onClick={() =>
-                                        handleReservation(
-                                            room.name,
-                                            room.day,
-                                            session.hour
-                                        )
+                                        handleReservation(room, session)
                                     }
                                     className={`${
                                         session && session.is_blocked
-                                            ? "bg-gray-500/50"
-                                            : ""
+                                            ? "bg-gray-500/50 cursor-default"
+                                            : "hover:bg-blue-200"
                                     } border flex justify-center items-center w-full h-8`}
                                 >
                                     {session
@@ -68,5 +89,31 @@ export default function Table() {
         ));
     }
 
-    return <div className="flex">{content}</div>;
+    return (
+        <>
+            <div className="flex">{content}</div>
+            {rooms.roomsData && (
+                <div>
+                    {rooms.roomsData.map((room) => (
+                        <p key={nanoid(8)}>
+                            <img
+                                src={room.icon}
+                                alt={room.name}
+                                className="w-10 h-10 inline"
+                            />
+                            <span>= {room.name}</span>
+                        </p>
+                    ))}
+                </div>
+            )}
+            {showModal &&
+                createPortal(
+                    <ModalContent
+                        closeModal={() => setShowModal(false)}
+                        roomInfos={roomInfos}
+                    />,
+                    document.body
+                )}
+        </>
+    );
 }
