@@ -1,15 +1,23 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import { getData } from "../../features/rooms.js";
+import { resetState } from "../../features/reservation.js";
 import spinner from "../../assets/spinner.svg";
-import ModalContent from "../Reservation/ModalContent.jsx";
-import { createPortal } from "react-dom";
+import ModalPart1 from "../Reservation/ModalPart1.jsx";
+import ModalPart2 from "../Reservation/ModalPart2.jsx";
 
 export default function Table() {
     const dispatch = useDispatch();
-    const [showModal, setShowModal] = useState(false);
-    const [roomInfos, setRoomInfos] = useState({
+    const [fetchRoomInfos, setFetchRoomInfos] = useState({
+        data: undefined,
+        loading: false,
+        error: false,
+    });
+    const [showModal1, setShowModal1] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
+    const [roomDate, setRoomDate] = useState({
         name: null,
         day: null,
         hour: null,
@@ -21,6 +29,7 @@ export default function Table() {
     }
 
     const handleReservation = (room, session) => {
+        dispatch(resetState());
         const currentDay = new Date();
         currentDay.setHours(0, 0, 0, 0);
 
@@ -31,12 +40,37 @@ export default function Table() {
             !session.is_blocked &&
             currentDay.getTime() <= dayChoiced.getTime()
         ) {
-            setShowModal(true);
-            setRoomInfos({
+            setShowModal1(true);
+            setRoomDate({
                 name: room.name,
                 day: room.day,
                 hour: session.hour,
             });
+
+            setFetchRoomInfos({ ...fetchRoomInfos, loading: true });
+            fetch(
+                `${import.meta.env.VITE_API_URL}/get-prices?room_id=${
+                    room.room_id
+                }`
+            )
+                .then((response) => {
+                    if (!response.ok) throw new Error();
+                    return response.json();
+                })
+                .then((data) => {
+                    setFetchRoomInfos({
+                        ...fetchRoomInfos,
+                        data: data.roomInfos,
+                        loading: false,
+                    });
+                })
+                .catch(() =>
+                    setFetchRoomInfos({
+                        ...fetchRoomInfos,
+                        error: true,
+                        loading: false,
+                    })
+                );
         }
     };
 
@@ -106,11 +140,23 @@ export default function Table() {
                     ))}
                 </div>
             )}
-            {showModal &&
+            {showModal1 &&
                 createPortal(
-                    <ModalContent
-                        closeModal={() => setShowModal(false)}
-                        roomInfos={roomInfos}
+                    <ModalPart1
+                        closeModal={() => setShowModal1(false)}
+                        roomDate={roomDate}
+                        roomInfos={fetchRoomInfos}
+                        setShowModal2={setShowModal2}
+                    />,
+                    document.body
+                )}
+            {showModal2 &&
+                createPortal(
+                    <ModalPart2
+                        closeModal={() => setShowModal2(false)}
+                        roomDate={roomDate}
+                        roomInfos={fetchRoomInfos}
+                        setShowModal1={setShowModal1}
                     />,
                     document.body
                 )}
