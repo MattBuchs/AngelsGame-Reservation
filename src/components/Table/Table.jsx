@@ -103,10 +103,15 @@ export default function Table() {
                                     onClick={() =>
                                         handleReservation(room, session)
                                     }
+                                    disabled={!session}
                                     className={`${
                                         session && session.is_blocked
                                             ? "bg-gray-500/50 cursor-default"
-                                            : "hover:bg-blue-200"
+                                            : `${
+                                                  session
+                                                      ? "hover:bg-blue-200"
+                                                      : ""
+                                              }`
                                     } border flex justify-center items-center w-full h-8`}
                                 >
                                     {session
