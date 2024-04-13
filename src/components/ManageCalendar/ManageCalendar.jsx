@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addDayDisplayed } from "../../features/rooms";
 import { getData, addLoader, addData, addError } from "../../features/rooms";
 import { formatDate } from "../../utils/formatDate";
 
 export default function ManageCalendar() {
     const dispatch = useDispatch();
+    const dateRef = useRef();
     const { roomsData, dayDisplayed, farthestDay } = useSelector(
         (state) => state.rooms
     );
@@ -69,8 +70,24 @@ export default function ManageCalendar() {
         )
             return;
 
+        let formatDate;
+        if (value === "") {
+            const newDate = new Date();
+            const newYear = newDate.getFullYear();
+            const newMonth = newDate.getMonth() + 1;
+            const newDay = newDate.getDate();
+
+            formatDate = `${newYear}-${newMonth}-${newDay}`;
+
+            setBtnsDisabled({
+                previousBtn: true,
+                nextBtn: false,
+            });
+        } else {
+            formatDate = `${year}-${month}-${day}`;
+        }
+
         dispatch(addLoader());
-        const formatDate = `${year}-${month}-${day}`;
 
         fetch(`${import.meta.env.VITE_API_URL}/get-day?date=${formatDate}`)
             .then((response) => {
@@ -82,19 +99,21 @@ export default function ManageCalendar() {
             })
             .catch(() => dispatch(addError()));
 
-        const previousDate = chosenDate.setDate(chosenDate.getDate() - 1);
-        const nextDate = chosenDate.setDate(chosenDate.getDate() + 1);
-        let previousBtnDisabled = false;
-        let nextBtnDisabled = false;
+        if (value !== "") {
+            const previousDate = chosenDate.setDate(chosenDate.getDate() - 1);
+            const nextDate = chosenDate.setDate(chosenDate.getDate() + 1);
+            let previousBtnDisabled = false;
+            let nextBtnDisabled = false;
 
-        if (previousDate <= currentDate.getTime()) previousBtnDisabled = true;
-        console.log(nextDate, maxDate.getTime());
-        if (nextDate >= maxDate.getTime()) nextBtnDisabled = true;
+            if (previousDate <= currentDate.getTime())
+                previousBtnDisabled = true;
+            if (nextDate >= maxDate.getTime()) nextBtnDisabled = true;
 
-        setBtnsDisabled({
-            previousBtn: previousBtnDisabled,
-            nextBtn: nextBtnDisabled,
-        });
+            setBtnsDisabled({
+                previousBtn: previousBtnDisabled,
+                nextBtn: nextBtnDisabled,
+            });
+        }
     };
 
     return (
@@ -106,40 +125,46 @@ export default function ManageCalendar() {
             >
                 Prev
             </button>
-            <p>{roomsData && formatDate(roomsData[0].day)}</p>
-            <div className="relative">
-                <img
-                    src="/img/calendar.svg"
-                    alt="Cliquez pour ouvrir le calendrier"
-                    className="w-5 h-5"
-                />
-                <input
-                    type="date"
-                    value={dayDisplayed || ""}
-                    onChange={handleDate}
-                    min={`${currentDate.getFullYear()}-${
-                        currentDate.getMonth() + 1 < 10
-                            ? `0${Number(currentDate.getMonth() + 1)}`
-                            : currentDate.getMonth() + 1
-                    }-${
-                        currentDate.getDate() < 10
-                            ? `0${currentDate.getDate()}`
-                            : currentDate.getDate()
-                    }`}
-                    max={
-                        maxDate &&
-                        `${maxDate.getFullYear()}-${
-                            Number(maxDate.getMonth() + 1) < 10
-                                ? `0${Number(maxDate.getMonth() + 1)}`
-                                : maxDate.getMonth()
+            <div
+                className="flex cursor-pointer"
+                onClick={() => dateRef.current.showPicker()}
+            >
+                <p>{roomsData && formatDate(roomsData[0].day)}</p>
+                <div className="relative">
+                    <img
+                        src="/img/calendar.svg"
+                        alt="Cliquez pour ouvrir le calendrier"
+                        className="w-5 h-5"
+                    />
+                    <input
+                        type="date"
+                        value={dayDisplayed || ""}
+                        onChange={handleDate}
+                        ref={dateRef}
+                        min={`${currentDate.getFullYear()}-${
+                            currentDate.getMonth() + 1 < 10
+                                ? `0${Number(currentDate.getMonth() + 1)}`
+                                : currentDate.getMonth() + 1
                         }-${
-                            maxDate.getDate() < 10
-                                ? `0${maxDate.getDate()}`
-                                : maxDate.getDate()
-                        }`
-                    }
-                    className="absolute top-0 left-0 opacity-0 w-full h-full"
-                />
+                            currentDate.getDate() < 10
+                                ? `0${currentDate.getDate()}`
+                                : currentDate.getDate()
+                        }`}
+                        max={
+                            maxDate &&
+                            `${maxDate.getFullYear()}-${
+                                Number(maxDate.getMonth() + 1) < 10
+                                    ? `0${Number(maxDate.getMonth() + 1)}`
+                                    : maxDate.getMonth()
+                            }-${
+                                maxDate.getDate() < 10
+                                    ? `0${maxDate.getDate()}`
+                                    : maxDate.getDate()
+                            }`
+                        }
+                        className="absolute top-0 left-0 opacity-0 w-full h-full"
+                    />
+                </div>
             </div>
             <button
                 onClick={handleNext}

@@ -16,7 +16,7 @@ export default function ModalPart2({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-slate-300 text-slate-900 p-10 rounded relative mb-[10vh]"
+                className="bg-slate-300 text-slate-900 p-10 rounded relative mb-[10vh] w-[500px]"
             >
                 <button
                     onClick={closeModal}

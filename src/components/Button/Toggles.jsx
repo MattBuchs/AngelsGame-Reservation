@@ -5,7 +5,7 @@ import cross from "/img/cross.svg";
 export default function Toggles({ label, isChecked, setIsChecked }) {
     const dispatch = useDispatch();
     return (
-        <div>
+        <div className="flex justify-between items-center">
             <label className="flex cursor-pointer select-none items-center">
                 {label}
             </label>

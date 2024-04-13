@@ -5,7 +5,6 @@ import {
     addPlayer,
     removePlayer,
     toggleChildren,
-    setNumberChildren,
 } from "../../features/reservation";
 import { formatDate } from "../../utils/formatDate";
 import Toggles from "../Button/Toggles";
@@ -17,28 +16,25 @@ export default function ModalContent({
     setShowModal2,
 }) {
     const dispatch = useDispatch();
-    const { nbPlayers, isChildren, numberChildren } = useSelector(
-        (state) => state.reservation
-    );
-    console.log(nbPlayers);
-    // const [numberChildren, setNumberChildren] = useState(1);
+    const { nbPlayers, isChildren } = useSelector((state) => state.reservation);
 
     useEffect(() => {
-        if (roomInfos.data && nbPlayers === null) {
+        if (roomInfos.data) {
             dispatch(setNbPlayers(roomInfos.data.lowest_capacity));
         }
-    }, [roomInfos.data, dispatch, nbPlayers]);
+    }, [roomInfos.data, dispatch]);
 
     const handleMorePlayers = (e) => {
         e.preventDefault();
-        if (nbPlayers === roomInfos.data.highest_capacity) return;
+        if (nbPlayers >= roomInfos.data.highest_capacity) return;
+        console.log(nbPlayers, roomInfos.data.highest_capacity);
 
         dispatch(addPlayer());
     };
 
     const handleFewerPlayers = (e) => {
         e.preventDefault();
-        if (nbPlayers === roomInfos.data.lowest_capacity) return;
+        if (nbPlayers <= roomInfos.data.lowest_capacity) return;
 
         dispatch(removePlayer());
     };
@@ -58,7 +54,7 @@ export default function ModalContent({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-slate-300 text-slate-900 p-10 rounded relative mb-[10vh]"
+                className="bg-slate-300 text-slate-900 p-10 rounded relative mb-[10vh] w-[500px]"
             >
                 <button
                     onClick={closeModal}
@@ -66,14 +62,19 @@ export default function ModalContent({
                 >
                     X
                 </button>
-                <div>
+                <div className="flex flex-col items-center mb-10">
+                    <img
+                        src={roomDate.icon}
+                        alt=""
+                        className="w-12 h-12 mb-2"
+                    />
                     <p>{roomDate.name}</p>
                     <p>{formatDate(roomDate.day)}</p>
-                    <p>{roomDate.hour}</p>
+                    <p>à {roomDate.hour}</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                         <p>Joueurs</p>
                         <div className="flex">
                             <button
@@ -94,41 +95,35 @@ export default function ModalContent({
                         </div>
                     </div>
 
-                    <div>
+                    <div className="mt-4">
                         <Toggles
-                            label={"Enfants de moins de 13 ans"}
+                            label={"Enfants"}
                             isChecked={isChildren}
                             setIsChecked={toggleChildren()}
                         />
                         {isChildren && (
-                            <div>
-                                <p>
-                                    Attention les enfants de moins de 13 ans
+                            <div className="w-3/4">
+                                <p className="text-xs text-gray-600 italic">
+                                    Attention les enfants de moins de 15 ans
                                     doivent toujours être accompagnés par un
                                     adulte.
                                 </p>
-                                <label htmlFor="number_children">
-                                    Nombres d&apos;enfant
-                                </label>
-                                <input
-                                    type="number"
-                                    id="number_children"
-                                    min={1}
-                                    max={Number(
-                                        roomInfos.data.highest_capacity - 1
-                                    )}
-                                    onChange={(e) =>
-                                        dispatch(
-                                            setNumberChildren(e.target.value)
-                                        )
-                                    }
-                                    value={numberChildren}
-                                />
+                                <div className="mt-2 ml-2">
+                                    <label htmlFor="number_children">
+                                        - Âge des enfants :
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="number_children"
+                                        placeholder="14, 10..."
+                                        className="ml-1.5 w-28"
+                                    />
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="flex">
+                    <div className="flex mt-10">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="gray"

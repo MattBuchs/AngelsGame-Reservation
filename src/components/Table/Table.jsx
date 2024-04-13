@@ -21,6 +21,7 @@ export default function Table() {
         name: null,
         day: null,
         hour: null,
+        icon: null,
     });
     const rooms = useSelector((state) => state.rooms);
 
@@ -38,6 +39,7 @@ export default function Table() {
 
         if (
             !session.is_blocked &&
+            !session.is_closed &&
             currentDay.getTime() <= dayChoiced.getTime()
         ) {
             setShowModal1(true);
@@ -45,6 +47,7 @@ export default function Table() {
                 name: room.name,
                 day: room.day,
                 hour: session.hour,
+                icon: room.icon,
             });
 
             setFetchRoomInfos({ ...fetchRoomInfos, loading: true });
@@ -103,21 +106,32 @@ export default function Table() {
                                     onClick={() =>
                                         handleReservation(room, session)
                                     }
-                                    disabled={!session}
+                                    disabled={!session || session.is_closed}
                                     className={`${
-                                        session && session.is_blocked
-                                            ? "bg-gray-500/50 cursor-default"
-                                            : `${
-                                                  session
-                                                      ? "hover:bg-blue-200"
-                                                      : ""
+                                        session
+                                            ? `${
+                                                  session.is_blocked ||
+                                                  session.is_closed
+                                                      ? "bg-gray-500/50 cursor-default"
+                                                      : `${
+                                                            session
+                                                                ? "hover:bg-blue-200"
+                                                                : ""
+                                                        }`
                                               }`
+                                            : "bg-gray-500/50 cursor-default"
                                     } border flex justify-center items-center w-full h-8`}
                                 >
                                     {session
-                                        ? session.is_blocked
-                                            ? "Complet"
-                                            : session.hour
+                                        ? `${
+                                              session.is_closed
+                                                  ? "Fermer"
+                                                  : `${
+                                                        session.is_blocked
+                                                            ? "Complet"
+                                                            : session.hour
+                                                    }`
+                                          }`
                                         : "-"}
                                 </button>
                             );
