@@ -1,18 +1,28 @@
-import Table from "./components/Table/Table.jsx";
-import ManageCalendar from "./components/ManageCalendar/ManageCalendar.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { getData } from "./features/rooms.js";
+import Nav from "./components/Nav/nav.jsx";
+import Home from "./components/Home/Home.jsx";
+import Room from "./components/Room/Room.jsx";
 
 function App() {
+    const dispatch = useDispatch();
+    const rooms = useSelector((state) => state.rooms);
+
+    if (!rooms.roomsData && !rooms.loading && !rooms.error) {
+        dispatch(getData());
+    }
+
     return (
-        <div>
-            <h1>Réservez votre Escape Game !</h1>
-            <p>
-                Les réservations s’effectuent en ligne, jusqu’à 3 mois à
-                l’avance.
-            </p>
-            <p>Les disponibilités sont mises à jour en temps réel</p>
-            <ManageCalendar />
-            <Table />
-        </div>
+        <BrowserRouter>
+            <Nav />
+            <main>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/room/:roomName" element={<Room />} />
+                </Routes>
+            </main>
+        </BrowserRouter>
     );
 }
 

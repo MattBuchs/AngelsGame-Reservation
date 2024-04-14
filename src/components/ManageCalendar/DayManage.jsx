@@ -4,7 +4,7 @@ import { addDayDisplayed } from "../../features/rooms";
 import { getData, addLoader, addData, addError } from "../../features/rooms";
 import { formatDate } from "../../utils/formatDate";
 
-export default function ManageCalendar() {
+export default function DayManage() {
     const dispatch = useDispatch();
     const dateRef = useRef();
     const { roomsData, dayDisplayed, farthestDay } = useSelector(

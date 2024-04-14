@@ -2,13 +2,12 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
-import { getData } from "../../features/rooms.js";
 import { resetState } from "../../features/reservation.js";
 import spinner from "../../assets/spinner.svg";
 import ModalPart1 from "../Reservation/ModalPart1.jsx";
 import ModalPart2 from "../Reservation/ModalPart2.jsx";
 
-export default function Table() {
+export default function DayTable() {
     const dispatch = useDispatch();
     const [fetchRoomInfos, setFetchRoomInfos] = useState({
         data: undefined,
@@ -24,10 +23,6 @@ export default function Table() {
         icon: null,
     });
     const rooms = useSelector((state) => state.rooms);
-
-    if (!rooms.roomsData && !rooms.loading && !rooms.error) {
-        dispatch(getData());
-    }
 
     const handleReservation = (room, session) => {
         dispatch(resetState());
