@@ -1,4 +1,10 @@
-export const formatDate = (dateString) => {
+export const formatDate = (
+    dateString,
+    dayOfWeekDisplayed = true,
+    dayDisplayed = true,
+    monthDisplayed = true,
+    yearDisplayed = true
+) => {
     // Analyse la chaîne de date pour obtenir l'année, le mois et le jour
     const [year, month, day] = dateString.split("-");
 
@@ -35,5 +41,7 @@ export const formatDate = (dateString) => {
     const monthName = months[date.getMonth()];
 
     // Retourne la date formatée
-    return `${dayOfWeek} ${day} ${monthName} ${year}`;
+    return `${dayOfWeekDisplayed ? dayOfWeek : ""} ${dayDisplayed ? day : ""} ${
+        monthDisplayed ? monthName : ""
+    } ${yearDisplayed ? year : ""}`;
 };

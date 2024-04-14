@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { formatNameForUrl } from "../../utils/formatNameForUrl";
 import ChooseRoom from "../ChooseRoom/ChooseRoom";
+import WeekTable from "../Table/WeekTable.jsx";
+import Prices from "./Prices.jsx";
 
 export default function Room() {
     const { roomName } = useParams();
@@ -29,6 +31,8 @@ export default function Room() {
             </p>
             <p>Les disponibilités sont mises à jour en temps réel</p>
             <ChooseRoom roomName={roomName} />
+            <WeekTable roomObj={roomObj} />
+            <Prices />
         </div>
     );
 }
