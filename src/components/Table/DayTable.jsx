@@ -83,64 +83,73 @@ export default function DayTable() {
             ...rooms.roomsData.map((room) => room.sessions.length)
         );
 
-        content = rooms.roomsData.map((room) => (
-            <div key={nanoid(8)} className="w-20 border">
-                <div
-                    title={room.name}
-                    className="border w-full h-10 flex justify-center items-center bg-slate-300"
-                >
-                    <img src={room.icon} alt={room.name} className="w-7 h-7" />
-                </div>
-                <div>
-                    {Array.from({ length: maxSessionsLength }).map(
-                        (_, index) => {
-                            const session = room.sessions[index];
-                            return (
-                                <button
-                                    key={nanoid(8)}
-                                    onClick={() =>
-                                        handleReservation(room, session)
-                                    }
-                                    disabled={!session || session.is_closed}
-                                    className={`${
-                                        session
-                                            ? `${
-                                                  session.is_blocked ||
-                                                  session.is_closed
-                                                      ? "bg-gray-500/50 cursor-default"
-                                                      : `${
+        content = (
+            <>
+                <div key={nanoid(8)} className="flex mt-1">
+                    {rooms.roomsData.map((room) => (
+                        <div key={nanoid(8)} className="w-32">
+                            <div
+                                title={room.name}
+                                className="border w-full h-14 flex justify-center items-center bg-slate-300 p-2"
+                            >
+                                <img
+                                    src={room.icon}
+                                    alt={room.name}
+                                    className="w-full h-full"
+                                />
+                            </div>
+                            <ul>
+                                {Array.from({ length: maxSessionsLength }).map(
+                                    (_, index) => {
+                                        const session = room.sessions[index];
+                                        return (
+                                            <li key={nanoid(8)}>
+                                                <button
+                                                    onClick={() =>
+                                                        handleReservation(
+                                                            room,
                                                             session
-                                                                ? "hover:bg-blue-200"
-                                                                : ""
-                                                        }`
-                                              }`
-                                            : "bg-gray-500/50 cursor-default"
-                                    } border flex justify-center items-center w-full h-8`}
-                                >
-                                    {session
-                                        ? `${
-                                              session.is_closed
-                                                  ? "Fermer"
-                                                  : `${
-                                                        session.is_blocked
-                                                            ? "Complet"
-                                                            : session.hour
-                                                    }`
-                                          }`
-                                        : "-"}
-                                </button>
-                            );
-                        }
-                    )}
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        !session ||
+                                                        session.is_closed
+                                                    }
+                                                    className={`${
+                                                        session
+                                                            ? `${
+                                                                  session.is_blocked ||
+                                                                  session.is_closed
+                                                                      ? "bg-gray-500/50 cursor-default"
+                                                                      : `${
+                                                                            session
+                                                                                ? "hover:bg-blue-200"
+                                                                                : ""
+                                                                        }`
+                                                              }`
+                                                            : "bg-gray-500/50 cursor-default"
+                                                    } border flex justify-center items-center w-full h-10`}
+                                                >
+                                                    {session
+                                                        ? `${
+                                                              session.is_closed
+                                                                  ? "Fermer"
+                                                                  : `${
+                                                                        session.is_blocked
+                                                                            ? "Complet"
+                                                                            : session.hour
+                                                                    }`
+                                                          }`
+                                                        : "-"}
+                                                </button>
+                                            </li>
+                                        );
+                                    }
+                                )}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
-            </div>
-        ));
-    }
-
-    return (
-        <>
-            <div className="flex">{content}</div>
-            {rooms.roomsData && (
                 <div>
                     {rooms.roomsData.map((room) => (
                         <p key={nanoid(8)}>
@@ -153,7 +162,13 @@ export default function DayTable() {
                         </p>
                     ))}
                 </div>
-            )}
+            </>
+        );
+    }
+
+    return (
+        <>
+            {content}
             {showModal1 &&
                 createPortal(
                     <ModalPart1

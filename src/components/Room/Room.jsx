@@ -22,17 +22,29 @@ export default function Room() {
     }, [roomsData, roomName]);
 
     return (
-        <div>
-            <h2>{roomObj && roomObj.name}</h2>
-            <h3>Réservez votre Escape Game !</h3>
-            <p>
-                Les réservations s’effectuent en ligne, jusqu’à 3 mois à
-                l’avance.
-            </p>
-            <p>Les disponibilités sont mises à jour en temps réel</p>
-            <ChooseRoom roomName={roomName} />
-            <WeekTable roomObj={roomObj} />
-            <Prices />
-        </div>
+        <>
+            <section className="text-center mt-4">
+                <h2 className="text-3xl font-semibold">
+                    {roomObj && roomObj.name}
+                </h2>
+                <h3 className="text-lg italic mt-1">
+                    Réservez votre Escape Game !
+                </h3>
+                <p className="mt-2">
+                    Les réservations s’effectuent en ligne, jusqu’à 3 mois à
+                    l’avance.
+                </p>
+                <p>Les disponibilités sont mises à jour en temps réel</p>
+            </section>
+            <section className="text-center mt-10">
+                <ChooseRoom roomName={roomName} />
+            </section>
+            <section className="flex flex-col items-center mt-2">
+                <WeekTable roomObj={roomObj} />
+            </section>
+            <section>
+                <Prices roomObj={roomObj} />
+            </section>
+        </>
     );
 }

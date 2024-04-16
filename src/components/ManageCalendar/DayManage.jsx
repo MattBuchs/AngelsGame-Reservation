@@ -117,7 +117,7 @@ export default function DayManage() {
     };
 
     return (
-        <div className="flex items-center">
+        <div className="flex items-center mt-3">
             <button
                 onClick={handlePrevious}
                 disabled={btnsDisabled.previousBtn}

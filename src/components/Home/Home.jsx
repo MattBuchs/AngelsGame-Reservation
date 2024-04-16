@@ -5,15 +5,25 @@ import ChooseRoom from "../ChooseRoom/ChooseRoom.jsx";
 export default function Home() {
     return (
         <div>
-            <h2>Réservez votre Escape Game !</h2>
-            <p>
-                Les réservations s’effectuent en ligne, jusqu’à 3 mois à
-                l’avance.
-            </p>
-            <p>Les disponibilités sont mises à jour en temps réel</p>
-            <ChooseRoom />
-            <DayManage />
-            <DayTable />
+            <section className="text-center mt-4">
+                <h2 className="text-lg italic mt-1">
+                    Réservez votre Escape Game !
+                </h2>
+                <p className="mt-2">
+                    Les réservations s’effectuent en ligne, jusqu’à 3 mois à
+                    l’avance.
+                </p>
+                <p>Les disponibilités sont mises à jour en temps réel</p>
+            </section>
+            <section className="text-center mt-10">
+                <ChooseRoom />
+            </section>
+            <section className="flex justify-center">
+                <DayManage />
+            </section>
+            <section className="flex flex-col items-center">
+                <DayTable />
+            </section>
         </div>
     );
 }

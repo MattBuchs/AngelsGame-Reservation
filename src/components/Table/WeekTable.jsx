@@ -33,13 +33,13 @@ export default function WeekTable({ roomObj }) {
             {loading && <img src={spinner} alt="Chargement" />}
             {error && <p>Une erreur est survenue...</p>}
             {weekRoomsData && (
-                <div>
+                <>
                     <header>
                         <ul className="flex">
                             {weekRoomsData.dayInfos.map((room, index) => (
                                 <li
                                     key={index}
-                                    className="border w-32 text-center px-2"
+                                    className="border w-32 text-center px-2 py-1 bg-slate-500 text-white"
                                 >
                                     <p>
                                         {formatDate(
@@ -66,7 +66,7 @@ export default function WeekTable({ roomObj }) {
                             {weekRoomsData.dayInfos.map((_, index) => (
                                 <li
                                     key={index}
-                                    className="border w-32 h-14 text-center p-2"
+                                    className="border w-32 h-14 text-center p-2 bg-slate-300"
                                 >
                                     <img
                                         src={weekRoomsData.icon}
@@ -76,6 +76,8 @@ export default function WeekTable({ roomObj }) {
                                 </li>
                             ))}
                         </ul>
+                    </header>
+                    <main>
                         <div className="flex">
                             {weekRoomsData.dayInfos.map((room, index) => (
                                 <ul key={index}>
@@ -92,8 +94,8 @@ export default function WeekTable({ roomObj }) {
                                 </ul>
                             ))}
                         </div>
-                    </header>
-                </div>
+                    </main>
+                </>
             )}
         </>
     );
