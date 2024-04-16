@@ -1,6 +1,6 @@
-import DayManage from "../ManageCalendar/DayManage.jsx";
-import DayTable from "../Table/DayTable.jsx";
-import ChooseRoom from "../ChooseRoom/ChooseRoom.jsx";
+import DayManage from "../../components/ManageCalendar/DayManage.jsx";
+import DayTable from "../../components/Table/DayTable.jsx";
+import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
 
 export default function Home() {
     return (

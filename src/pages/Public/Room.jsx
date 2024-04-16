@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { formatNameForUrl } from "../../utils/formatNameForUrl";
-import ChooseRoom from "../ChooseRoom/ChooseRoom";
-import WeekTable from "../Table/WeekTable.jsx";
-import Prices from "./Prices.jsx";
+import { formatNameForUrl } from "../../utils/formatNameForUrl.js";
+import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
+import WeekTable from "../../components/Table/WeekTable.jsx";
+import Prices from "../../components/DisplayPrices/Prices.jsx";
 
 export default function Room() {
     const { roomName } = useParams();

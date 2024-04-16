@@ -1,11 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getData } from "./features/rooms.js";
-import Nav from "./components/Nav/nav.jsx";
-import Home from "./components/Home/Home.jsx";
-import Room from "./components/Room/Room.jsx";
-import Admin from "./components/Admin/Admin.jsx";
-import Login from "./components/Login/Login.jsx";
+import PublicRouter from "./pages/Public/PublicRouter.jsx";
+import AdminRouter from "./pages/Admin/AdminRouter.jsx";
 
 function App() {
     const dispatch = useDispatch();
@@ -17,15 +14,10 @@ function App() {
 
     return (
         <BrowserRouter>
-            <Nav />
-            <main>
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/room/:roomName" element={<Room />} />
-                    <Route path="/dashboard" element={<Admin />} />
-                    <Route path="/login" element={<Login />} />
-                </Routes>
-            </main>
+            <Routes>
+                <Route path="/*" element={<PublicRouter />} />
+                <Route path="/admin/*" element={<AdminRouter />} />
+            </Routes>
         </BrowserRouter>
     );
 }

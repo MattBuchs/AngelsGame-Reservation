@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import { resetState } from "../../features/reservation.js";
 import spinner from "../../assets/spinner.svg";
-import ModalPart1 from "../Reservation/ModalPart1.jsx";
-import ModalPart2 from "../Reservation/ModalPart2.jsx";
+import ModalPart1 from "../Modal/ModalPart1.jsx";
+import ModalPart2 from "../Modal/ModalPart2.jsx";
 
 export default function DayTable() {
     const dispatch = useDispatch();
