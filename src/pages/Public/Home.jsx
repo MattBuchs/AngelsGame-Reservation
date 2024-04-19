@@ -1,8 +1,13 @@
 import DayManage from "../../components/ManageCalendar/DayManage.jsx";
 import DayTable from "../../components/Table/DayTable.jsx";
 import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
+import { useEffect } from "react";
 
 export default function Home() {
+    useEffect(() => {
+        document.title = `Réservation Angel's Game`;
+    }, []);
+
     return (
         <div>
             <section className="text-center mt-4">

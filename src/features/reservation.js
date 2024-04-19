@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     nbPlayers: null,
     isChildren: false,
+    finalizingReservation: false,
 };
 
 export const reservation = createSlice({
@@ -25,6 +26,12 @@ export const reservation = createSlice({
             state.nbPlayers = null;
             state.isChildren = false;
         },
+        addReservation: (state) => {
+            state.finalizingReservation = true;
+        },
+        removeReservation: (state) => {
+            state.finalizingReservation = false;
+        },
     },
 });
 
@@ -34,5 +41,7 @@ export const {
     removePlayer,
     toggleChildren,
     resetState,
+    addReservation,
+    removeReservation,
 } = reservation.actions;
 export default reservation.reducer;

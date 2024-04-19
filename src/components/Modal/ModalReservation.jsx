@@ -5,46 +5,43 @@ import {
     addPlayer,
     removePlayer,
     toggleChildren,
+    addReservation,
 } from "../../features/reservation";
+import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/formatDate";
 import Toggles from "../Button/Toggles";
 
-export default function ModalContent({
-    closeModal,
-    roomDate,
-    roomInfos,
-    setShowModal2,
-}) {
+export default function ModalReservation({ closeModal, roomDate, roomInfos }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { nbPlayers, isChildren } = useSelector((state) => state.reservation);
 
     useEffect(() => {
-        if (roomInfos.data) {
-            dispatch(setNbPlayers(roomInfos.data.lowest_capacity));
+        if (roomInfos) {
+            dispatch(setNbPlayers(roomInfos.lowest_capacity));
         }
-    }, [roomInfos.data, dispatch]);
+    }, [roomInfos, dispatch]);
 
     const handleMorePlayers = (e) => {
         e.preventDefault();
-        if (nbPlayers >= roomInfos.data.highest_capacity) return;
-        console.log(nbPlayers, roomInfos.data.highest_capacity);
+        if (nbPlayers >= roomInfos.highest_capacity) return;
+        console.log(nbPlayers, roomInfos.highest_capacity);
 
         dispatch(addPlayer());
     };
 
     const handleFewerPlayers = (e) => {
         e.preventDefault();
-        if (nbPlayers <= roomInfos.data.lowest_capacity) return;
+        if (nbPlayers <= roomInfos.lowest_capacity) return;
 
         dispatch(removePlayer());
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(e);
 
-        setShowModal2(true);
-        closeModal();
+        dispatch(addReservation());
+        navigate("/reservation");
     };
 
     return (
@@ -54,7 +51,7 @@ export default function ModalContent({
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-slate-300 text-slate-900 p-10 rounded relative mb-[10vh] w-[500px]"
+                className="bg-slate-300 text-slate-900 px-10 py-5 rounded relative mb-[8vh] w-[500px]"
             >
                 <button
                     onClick={closeModal}
@@ -62,7 +59,7 @@ export default function ModalContent({
                 >
                     X
                 </button>
-                <div className="flex flex-col items-center mb-10">
+                <div className="flex flex-col items-center mt-6 mb-10">
                     <img
                         src={roomDate.icon}
                         alt=""
@@ -123,37 +120,9 @@ export default function ModalContent({
                         )}
                     </div>
 
-                    <div className="flex mt-10">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="gray"
-                            opacity="0.4"
-                            viewBox="0 0 320 512"
-                            width="1.5rem"
-                            height="1.5rem"
-                        >
-                            Font Awesome Free 6.5.1 by @fontawesome -
-                            https://fontawesome.com License -
-                            https://fontawesome.com/license/free Copyright 2024
-                            Fonticons, Inc.
-                            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
-                        </svg>
-                        <button>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="#fff"
-                                viewBox="0 0 320 512"
-                                width="1.5rem"
-                                height="1.5rem"
-                            >
-                                Font Awesome Free 6.5.1 by @fontawesome -
-                                https://fontawesome.com License -
-                                https://fontawesome.com/license/free Copyright
-                                2024 Fonticons, Inc.
-                                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-                            </svg>
-                        </button>
-                    </div>
+                    <button className="mt-10 bg-blue-600 text-white px-4 py-1 rounded">
+                        suivant
+                    </button>
                 </form>
             </div>
         </div>

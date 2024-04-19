@@ -7,6 +7,7 @@ export default function AdminRouter() {
         <>
             <main>
                 <Routes>
+                    <Route index element={<Dashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
 
                     <Route path="*" element={<Error />} />

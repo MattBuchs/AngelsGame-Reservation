@@ -1,32 +1,59 @@
-import { useEffect } from "react";
-import { getWeekData } from "../../features/weekRooms";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { createPortal } from "react-dom";
 import { formatDate } from "../../utils/formatDate";
+import { getWeekData } from "../../features/weekRooms";
+import { resetState } from "../../features/reservation";
+import { getPricesData } from "../../features/prices";
+import ModalReservation from "../Modal/ModalReservation";
 import spinner from "../../assets/spinner.svg";
 
 export default function WeekTable({ roomObj }) {
     const dispatch = useDispatch();
     const { dayDisplayed } = useSelector((state) => state.rooms);
+    const { pricesData } = useSelector((state) => state.prices);
     const { weekRoomsData, loading, error } = useSelector(
         (state) => state.weekRooms
     );
+    const [showModal, setShowModal] = useState(false);
+    const [roomDate, setRoomDate] = useState({
+        name: null,
+        day: null,
+        hour: null,
+        icon: null,
+    });
 
     useEffect(() => {
         if (roomObj) {
-            let day;
-
-            if (dayDisplayed) day = dayDisplayed;
-            else {
-                const newDate = new Date();
-
-                day = `${newDate.getFullYear()}-${
-                    newDate.getMonth() + 1
-                }-${newDate.getDate()}`;
-            }
-
-            dispatch(getWeekData(day, roomObj.room_id));
+            dispatch(getWeekData(dayDisplayed, roomObj.room_id));
         }
     }, [dayDisplayed, dispatch, roomObj]);
+
+    const handleReservation = (room, session) => {
+        console.log(room, session);
+        dispatch(resetState());
+        const currentDay = new Date();
+        currentDay.setHours(0, 0, 0, 0);
+
+        const [year, month, day] = room.date.split("-");
+        const dayChoiced = new Date(year, month - 1, day);
+
+        if (
+            !session.is_blocked &&
+            !session.is_closed &&
+            currentDay.getTime() <= dayChoiced.getTime()
+        ) {
+            setShowModal(true);
+            setRoomDate({
+                name: room.name,
+                day: room.date,
+                hour: session.hour,
+                icon: room.icon,
+            });
+
+            dispatch(getPricesData(room.id));
+        }
+    };
 
     return (
         <>
@@ -85,9 +112,38 @@ export default function WeekTable({ roomObj }) {
                                         (session, sessionIndex) => (
                                             <li
                                                 key={`${index}-${sessionIndex}`}
-                                                className="border w-32 h-10 p-2 flex justify-center items-center"
+                                                className="border w-32 h-10 flex justify-center items-center"
                                             >
-                                                <button>{session.hour}</button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleReservation(
+                                                            {
+                                                                ...room,
+                                                                id: weekRoomsData.room_id,
+                                                                name: weekRoomsData.name,
+                                                                icon: weekRoomsData.icon,
+                                                            },
+                                                            session
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        !session ||
+                                                        session.is_closed ||
+                                                        session.is_blocked
+                                                    }
+                                                    className={`${
+                                                        session
+                                                            ? `${
+                                                                  session.is_blocked ||
+                                                                  session.is_closed
+                                                                      ? "bg-gray-600/60"
+                                                                      : "hover:bg-blue-200"
+                                                              }`
+                                                            : "bg-gray-600/60"
+                                                    } flex justify-center items-center w-full h-10 p-2`}
+                                                >
+                                                    {session.hour}
+                                                </button>
                                             </li>
                                         )
                                     )}
@@ -95,8 +151,23 @@ export default function WeekTable({ roomObj }) {
                             ))}
                         </div>
                     </main>
+                    <footer className="pt-2">
+                        <div className="flex items-center">
+                            <div className="h-4 w-5 bg-gray-600/60 mr-2"></div>
+                            <p>Complet ou fermé</p>
+                        </div>
+                    </footer>
                 </>
             )}
+            {showModal &&
+                createPortal(
+                    <ModalReservation
+                        closeModal={() => setShowModal(false)}
+                        roomDate={roomDate}
+                        roomInfos={pricesData}
+                    />,
+                    document.body
+                )}
         </>
     );
 }

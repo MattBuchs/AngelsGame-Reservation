@@ -3,19 +3,13 @@ import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import { resetState } from "../../features/reservation.js";
+import { getPricesData } from "../../features/prices.js";
 import spinner from "../../assets/spinner.svg";
-import ModalPart1 from "../Modal/ModalPart1.jsx";
-import ModalPart2 from "../Modal/ModalPart2.jsx";
+import ModalReservation from "../Modal/ModalReservation.jsx";
 
 export default function DayTable() {
     const dispatch = useDispatch();
-    const [fetchRoomInfos, setFetchRoomInfos] = useState({
-        data: undefined,
-        loading: false,
-        error: false,
-    });
-    const [showModal1, setShowModal1] = useState(false);
-    const [showModal2, setShowModal2] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [roomDate, setRoomDate] = useState({
         name: null,
         day: null,
@@ -23,6 +17,7 @@ export default function DayTable() {
         icon: null,
     });
     const rooms = useSelector((state) => state.rooms);
+    const { pricesData } = useSelector((state) => state.prices);
 
     const handleReservation = (room, session) => {
         dispatch(resetState());
@@ -37,7 +32,7 @@ export default function DayTable() {
             !session.is_closed &&
             currentDay.getTime() <= dayChoiced.getTime()
         ) {
-            setShowModal1(true);
+            setShowModal(true);
             setRoomDate({
                 name: room.name,
                 day: room.day,
@@ -45,30 +40,7 @@ export default function DayTable() {
                 icon: room.icon,
             });
 
-            setFetchRoomInfos({ ...fetchRoomInfos, loading: true });
-            fetch(
-                `${import.meta.env.VITE_API_URL}/get-prices?room_id=${
-                    room.room_id
-                }`
-            )
-                .then((response) => {
-                    if (!response.ok) throw new Error();
-                    return response.json();
-                })
-                .then((data) => {
-                    setFetchRoomInfos({
-                        ...fetchRoomInfos,
-                        data: data.roomInfos,
-                        loading: false,
-                    });
-                })
-                .catch(() =>
-                    setFetchRoomInfos({
-                        ...fetchRoomInfos,
-                        error: true,
-                        loading: false,
-                    })
-                );
+            dispatch(getPricesData(room.room_id));
         }
     };
 
@@ -113,33 +85,22 @@ export default function DayTable() {
                                                     }
                                                     disabled={
                                                         !session ||
-                                                        session.is_closed
+                                                        session.is_closed ||
+                                                        session.is_blocked
                                                     }
                                                     className={`${
                                                         session
                                                             ? `${
                                                                   session.is_blocked ||
                                                                   session.is_closed
-                                                                      ? "bg-gray-500/50 cursor-default"
-                                                                      : `${
-                                                                            session
-                                                                                ? "hover:bg-blue-200"
-                                                                                : ""
-                                                                        }`
+                                                                      ? "bg-gray-600/60"
+                                                                      : "hover:bg-blue-200"
                                                               }`
-                                                            : "bg-gray-500/50 cursor-default"
+                                                            : "bg-gray-600/60"
                                                     } border flex justify-center items-center w-full h-10`}
                                                 >
                                                     {session
-                                                        ? `${
-                                                              session.is_closed
-                                                                  ? "Fermer"
-                                                                  : `${
-                                                                        session.is_blocked
-                                                                            ? "Complet"
-                                                                            : session.hour
-                                                                    }`
-                                                          }`
+                                                        ? session.hour
                                                         : "-"}
                                                 </button>
                                             </li>
@@ -169,23 +130,12 @@ export default function DayTable() {
     return (
         <>
             {content}
-            {showModal1 &&
+            {showModal &&
                 createPortal(
-                    <ModalPart1
-                        closeModal={() => setShowModal1(false)}
+                    <ModalReservation
+                        closeModal={() => setShowModal(false)}
                         roomDate={roomDate}
-                        roomInfos={fetchRoomInfos}
-                        setShowModal2={setShowModal2}
-                    />,
-                    document.body
-                )}
-            {showModal2 &&
-                createPortal(
-                    <ModalPart2
-                        closeModal={() => setShowModal2(false)}
-                        roomDate={roomDate}
-                        roomInfos={fetchRoomInfos}
-                        setShowModal1={setShowModal1}
+                        roomInfos={pricesData}
                     />,
                     document.body
                 )}

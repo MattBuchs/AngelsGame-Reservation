@@ -19,6 +19,7 @@ export default function ChooseRoom({ roomName }) {
             id="room-select"
             onChange={handleChange}
             value={roomName}
+            className="px-2"
         >
             <option value="">Toutes les salles</option>
             {roomsData &&
