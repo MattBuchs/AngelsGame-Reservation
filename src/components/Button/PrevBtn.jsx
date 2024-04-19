@@ -7,6 +7,7 @@ export default function PrevBtn({ isWeek }) {
     const [btnDisabled, setBtnDisabled] = useState(false);
     const { dayDisplayed } = useSelector((state) => state.rooms);
     const { weekRoomsData } = useSelector((state) => state.weekRooms);
+    const dayNumber = isWeek ? 7 : 1;
 
     useEffect(() => {
         const date = new Date();
@@ -29,13 +30,16 @@ export default function PrevBtn({ isWeek }) {
     }, [dayDisplayed, dispatch]);
 
     const handleClick = () => {
-        const lastDate = weekRoomsData.dayInfos[0].date;
+        let lastDate;
+
+        if (isWeek) lastDate = weekRoomsData.dayInfos[0].date;
+        else lastDate = dayDisplayed;
 
         const [lastYear, lastMonth, lastDay] = lastDate.split("-");
         let currentDate = new Date(lastYear, lastMonth - 1, lastDay);
 
         // Ajouter un jour à la date actuelle pour obtenir la date du jour suivant
-        currentDate.setDate(currentDate.getDate() - 7);
+        currentDate.setDate(currentDate.getDate() - dayNumber);
 
         if (currentDate < new Date()) currentDate = new Date();
 

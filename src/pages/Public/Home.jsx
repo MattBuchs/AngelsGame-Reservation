@@ -1,7 +1,8 @@
-import DayManage from "../../components/ManageCalendar/DayManage.jsx";
+import { useEffect } from "react";
 import DayTable from "../../components/Table/DayTable.jsx";
 import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
-import { useEffect } from "react";
+import PrevBtn from "../../components/Button/PrevBtn.jsx";
+import NextBtn from "../../components/Button/NextBtn.jsx";
 
 export default function Home() {
     useEffect(() => {
@@ -20,11 +21,10 @@ export default function Home() {
                 </p>
                 <p>Les disponibilités sont mises à jour en temps réel</p>
             </section>
-            <section className="text-center mt-10">
+            <section className="mt-10 flex justify-center">
+                <PrevBtn isWeek={false} />
                 <ChooseRoom />
-            </section>
-            <section className="flex justify-center">
-                <DayManage />
+                <NextBtn isWeek={false} />
             </section>
             <section className="flex flex-col items-center">
                 <DayTable />

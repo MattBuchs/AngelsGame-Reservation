@@ -16,10 +16,10 @@ export const rooms = createSlice({
             state.roomsData = action.payload;
             state.loading = false;
         },
-        addLoader: (state, action) => {
+        addLoader: (state) => {
             state.loading = true;
         },
-        addError: (state, action) => {
+        addError: (state) => {
             state.error = true;
             state.loading = false;
         },
@@ -33,16 +33,16 @@ export const rooms = createSlice({
 });
 
 export function getData(action) {
-    return function (dispatch, getState) {
+    return function (dispatch) {
         dispatch(addLoader());
 
-        let date;
-        if (!action) date = new Date();
-        else date = action;
-
-        const formatDate = `${date.getFullYear()}-${
-            date.getMonth() + 1
-        }-${date.getDate()}`;
+        let formatDate;
+        if (!action) {
+            const date = new Date();
+            formatDate = `${date.getFullYear()}-${
+                date.getMonth() + 1
+            }-${date.getDate()}`;
+        } else formatDate = action;
 
         fetch(`${import.meta.env.VITE_API_URL}/get-day?date=${formatDate}`)
             .then((response) => {

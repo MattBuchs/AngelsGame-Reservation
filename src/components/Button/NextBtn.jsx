@@ -2,28 +2,33 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addDayDisplayed } from "../../features/rooms";
 
-export default function NextBtn() {
+export default function NextBtn({ isWeek }) {
     const dispatch = useDispatch();
     const [btnDisabled, setBtnDisabled] = useState(false);
     const { dayDisplayed, farthestDay } = useSelector((state) => state.rooms);
     const { weekRoomsData } = useSelector((state) => state.weekRooms);
+    const dayNumber = isWeek ? 7 : 1;
 
     useEffect(() => {
         if (dayDisplayed && farthestDay) {
             const [year, month, day] = dayDisplayed.split("-");
             const chosenDay = new Date(year, month - 1, day);
-            chosenDay.setDate(chosenDay.getDate() + 7);
+            chosenDay.setDate(chosenDay.getDate() + dayNumber);
 
             const [year2, month2, day2] = farthestDay.split("-");
             const lastDay = new Date(year2, month2 - 1, day2);
 
             setBtnDisabled(chosenDay.getTime() >= lastDay.getTime());
         }
-    }, [dayDisplayed, farthestDay]);
+    }, [dayDisplayed, farthestDay, dayNumber]);
 
     const handleClick = () => {
-        const lastDate =
-            weekRoomsData.dayInfos[weekRoomsData.dayInfos.length - 1].date;
+        let lastDate;
+
+        if (isWeek)
+            lastDate =
+                weekRoomsData.dayInfos[weekRoomsData.dayInfos.length - 1].date;
+        else lastDate = dayDisplayed;
 
         const [year, month, day] = lastDate.split("-");
         const currentDate = new Date(year, month - 1, day);

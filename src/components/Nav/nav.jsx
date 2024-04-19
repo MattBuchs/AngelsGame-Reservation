@@ -14,7 +14,7 @@ export default function Nav() {
                     <li className="mr-6">
                         <NavLink to={"/home"}>Accueil</NavLink>
                     </li>
-                    <li className="mr-6">
+                    <li className={`${finalizingReservation ? "mr-6" : ""}`}>
                         <NavLink to={"/prices"}>Tarifs</NavLink>
                     </li>
                     {finalizingReservation && (
