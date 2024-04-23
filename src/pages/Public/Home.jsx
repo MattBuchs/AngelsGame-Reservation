@@ -1,16 +1,19 @@
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import DayTable from "../../components/Table/DayTable.jsx";
 import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
 import PrevBtn from "../../components/Button/PrevBtn.jsx";
 import NextBtn from "../../components/Button/NextBtn.jsx";
+import { disabledCalendar } from "../../features/rooms.js";
 
 export default function Home() {
+    const dispatch = useDispatch();
     useEffect(() => {
         document.title = `Réservation Angel's Game`;
     }, []);
 
     return (
-        <div>
+        <div onClick={() => dispatch(disabledCalendar())}>
             <section className="text-center mt-4">
                 <h2 className="text-lg italic mt-1">
                     Réservez votre Escape Game !

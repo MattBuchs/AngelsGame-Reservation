@@ -8,9 +8,7 @@ export default function PublicRouter() {
             <Nav />
             <main>
                 <Routes>
-                    <Route index element={<Home />} />
-
-                    <Route path="/home" element={<Home />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="/room/:roomName" element={<Room />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/reservation" element={<Reservation />} />

@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
+import Calendar from "../Button/Calendar.jsx";
 import { resetState } from "../../features/reservation.js";
 import { getPricesData } from "../../features/prices.js";
 import { getData } from "../../features/rooms.js";
 import spinner from "../../assets/spinner.svg";
 import ModalReservation from "../Modal/ModalReservation.jsx";
-import { formatDate } from "../../utils/formatDate.js";
 
 export default function DayTable() {
     const dispatch = useDispatch();
@@ -63,10 +63,8 @@ export default function DayTable() {
 
         content = (
             <>
-                <div className="w-[40rem] h-10 bg-slate-500 mt-2 flex justify-center items-center">
-                    <p className="text-white text-lg">
-                        {formatDate(rooms.dayDisplayed)}
-                    </p>
+                <div className="w-[40rem] h-10 bg-slate-500 mt-2 rounded-t flex justify-center items-center">
+                    <Calendar />
                 </div>
                 <div key={nanoid(8)} className="flex">
                     {rooms.roomsData.map((room) => (

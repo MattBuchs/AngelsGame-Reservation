@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { formatNameForUrl } from "../../utils/formatNameForUrl.js";
 import ChooseRoom from "../../components/ChooseRoom/ChooseRoom.jsx";
 import WeekTable from "../../components/Table/WeekTable.jsx";
-import Prices from "../../components/DisplayPrices/Prices.jsx";
+import PricesComponent from "../../components/DisplayPrices/PricesComponent.jsx";
 import PrevBtn from "../../components/Button/PrevBtn.jsx";
 import NextBtn from "../../components/Button/NextBtn.jsx";
+import Calendar from "../../components/Button/Calendar.jsx";
+import { disabledCalendar } from "../../features/rooms.js";
 
 export default function Room() {
+    const dispatch = useDispatch();
     const { roomName } = useParams();
     const { roomsData } = useSelector((state) => state.rooms);
     const [roomObj, setRoomObj] = useState();
@@ -30,8 +33,7 @@ export default function Room() {
     }, [roomObj]);
 
     return (
-        <>
-            <title>Mon site : Contactez-nous</title>
+        <div onClick={() => dispatch(disabledCalendar())}>
             <section className="text-center mt-4">
                 <h2 className="text-3xl font-semibold">
                     {roomObj && roomObj.name}
@@ -45,7 +47,10 @@ export default function Room() {
                 </p>
                 <p>Les disponibilités sont mises à jour en temps réel</p>
             </section>
-            <section className="mt-10 flex justify-center">
+            <section className="mt-10 flex justify-center items-center">
+                <Calendar bgButton={true} />
+            </section>
+            <section className="mt-3 flex justify-center">
                 <PrevBtn isWeek={true} />
                 <ChooseRoom roomName={roomName} />
                 <NextBtn isWeek={true} />
@@ -54,8 +59,8 @@ export default function Room() {
                 <WeekTable roomObj={roomObj} />
             </section>
             <section>
-                <Prices roomObj={roomObj} />
+                <PricesComponent roomObj={roomObj} />
             </section>
-        </>
+        </div>
     );
 }

@@ -6,6 +6,7 @@ const initialState = {
     error: false,
     dayDisplayed: null,
     farthestDay: null,
+    calendarDisplayed: false,
 };
 
 export const rooms = createSlice({
@@ -28,6 +29,12 @@ export const rooms = createSlice({
         },
         addFarthestDay: (state, action) => {
             state.farthestDay = action.payload;
+        },
+        toggleCalendar: (state) => {
+            state.calendarDisplayed = !state.calendarDisplayed;
+        },
+        disabledCalendar: (state) => {
+            state.calendarDisplayed = false;
         },
     },
 });
@@ -57,6 +64,13 @@ export function getData(action) {
     };
 }
 
-export const { addLoader, addData, addError, addDayDisplayed, addFarthestDay } =
-    rooms.actions;
+export const {
+    addLoader,
+    addData,
+    addError,
+    addDayDisplayed,
+    addFarthestDay,
+    toggleCalendar,
+    disabledCalendar,
+} = rooms.actions;
 export default rooms.reducer;
